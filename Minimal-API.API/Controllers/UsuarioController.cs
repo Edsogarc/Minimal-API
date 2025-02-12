@@ -21,7 +21,7 @@ namespace Minimal_API.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult LoginUsario([FromBody] Login login)
+        public IActionResult LoginUsario([FromBody] Login login)
         {
             if (login == null) return BadRequest("Dados inválidos");
             var existe = _authenticate.UserExists(login.Email);
@@ -37,7 +37,7 @@ namespace Minimal_API.API.Controllers
 
         }
         
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost("Cadastro")]
         public ActionResult CadastroUsuario([FromBody] UsuarioDTO usuarioDTO)
         {
@@ -63,7 +63,7 @@ namespace Minimal_API.API.Controllers
 
         [Authorize(Roles = "Administrador")]
         [HttpGet("{id}")]
-        public ActionResult BuscaPorId([FromRoute] int id)
+        public IActionResult BuscaPorId([FromRoute] int id)
         {
             var usuarioDTO = _usuarioService.BuscaPorId(id);
 
@@ -74,10 +74,12 @@ namespace Minimal_API.API.Controllers
 
         [Authorize(Roles = "Administrador")]
         [HttpPut("{id}")]
-        public ActionResult EditarVeiculo([FromRoute] int id)
+        public IActionResult EditarUsuario([FromRoute] int id)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             var usuarioDTO = _usuarioService.BuscaPorId(id);
-            if (usuarioDTO == null) return NotFound("Veículo não encontrado");
+            if (usuarioDTO == null) return NotFound("Usuário não encontrado");
 
             _usuarioService.Atualizar(usuarioDTO);
 
@@ -86,14 +88,14 @@ namespace Minimal_API.API.Controllers
 
         [Authorize(Roles = "Administrador")]
         [HttpDelete("{id}")]
-        public ActionResult ExcluirVeiculo([FromRoute] int id)
+        public IActionResult ExcluirUsuario([FromRoute] int id)
         {
             var usuarioDTO = _usuarioService.BuscaPorId(id);
-            if (usuarioDTO == null) return NotFound();
+            if (usuarioDTO == null) return NotFound("Usuário não encontrado");
 
             _usuarioService.Apagar(usuarioDTO);
 
-            return Ok($"{usuarioDTO}");
+            return Ok($"{usuarioDTO} Usuário excluído com sucesso");
         }
 
     }

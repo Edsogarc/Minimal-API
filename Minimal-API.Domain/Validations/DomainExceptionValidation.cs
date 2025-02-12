@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Minimal_API.Domain.Validations
+﻿namespace Minimal_API.Domain.Validations
 {
     public class DomainExceptionValidation : Exception
     {

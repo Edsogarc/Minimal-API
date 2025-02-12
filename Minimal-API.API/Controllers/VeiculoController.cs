@@ -17,59 +17,58 @@ namespace Minimal_API.API.Controllers
 
         [Authorize(Roles = "Adm,Editor")]
         [HttpPost("CadastroVeiculos")]
-        public ActionResult CadastroVeiculos([FromBody] VeiculoDTO veiculoDTO)
+        public IActionResult CadastroVeiculos([FromBody] VeiculoDTO veiculoDTO)
         {
             var veiculoTemp = _veiculoService.Incluir(veiculoDTO);
 
             if (veiculoTemp == null)
                 return BadRequest("Veículo não cadastrado");
-            
-            _veiculoService.Incluir(veiculoDTO);
+
             return Ok(veiculoDTO);
         }
 
         [Authorize(Roles = "Adm,Editor")]
         [HttpGet("RetornaVeiculos")]
-        public ActionResult RetornaTodosVeiculos([FromQuery] int? pagina)
+        public IActionResult RetornaTodosVeiculos([FromQuery] int? pagina)
         {
-            var veiculos = _veiculoService.Todos(pagina);
+            var veiculosDto = _veiculoService.Todos(pagina);
 
-            if (veiculos == null) return NotFound();
+            if (veiculosDto == null) return NotFound();
 
-            return Ok(veiculos);
+            return Ok(veiculosDto);
         }
 
         [Authorize(Roles = "Adm")]
         [HttpGet("{id}")]
-        public ActionResult BuscaPorId([FromRoute] int id)
+        public IActionResult BuscaPorId([FromRoute] int id)
         {
-            var veiculo = _veiculoService.BuscaPorId(id);
+            var veiculoDto = _veiculoService.BuscaPorId(id);
 
-            if (veiculo == null) return NotFound();
+            if (veiculoDto == null) return NotFound();
 
-            return Ok(veiculo);
+            return Ok(veiculoDto);
         }
 
         [Authorize(Roles = "Adm")]
         [HttpPut("{id}")]
-        public ActionResult EditarVeiculo([FromRoute] int id, VeiculoDTO veiculoDTO)
+        public IActionResult EditarVeiculo([FromRoute] int id, [FromBody] VeiculoDTO veiculoDTO)
         {
-            var veiculo = _veiculoService.BuscaPorId(id);
-            if (veiculo == null) return NotFound("Veículo não encontrado");
+            var veiculoDto = _veiculoService.BuscaPorId(id);
+            if (veiculoDto == null) return NotFound("Veículo não encontrado");
 
-            _veiculoService.Atualizar(veiculo);
+            _veiculoService.Atualizar(veiculoDto);
 
-            return Ok(veiculo);
+            return Ok(veiculoDto);
         }
 
         [Authorize(Roles = "Adm")]
         [HttpDelete("{id}")]
-        public ActionResult ExcluirVeiculo([FromRoute] int id)
+        public IActionResult ExcluirVeiculo([FromRoute] int id)
         {
-            var veiculo = _veiculoService.BuscaPorId(id);
-            if (veiculo == null) return NotFound();
+            var veiculoDto = _veiculoService.BuscaPorId(id);
+            if (veiculoDto == null) return NotFound();
 
-            _veiculoService.Apagar(veiculo);
+            _veiculoService.Apagar(veiculoDto);
 
             return NoContent();
         }
